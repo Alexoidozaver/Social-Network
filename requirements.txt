@@ -1,0 +1,11 @@
+Flask
+Flask-SQLAlchemy==2.1
+Flask-Migrate==1.8.0
+Flask-JWT-Extended 
+python-dotenv
+psycopg2==2.8.1
+sqlalchemy
+flake8
+flasgger
+marshmallow
+apispec==1.0.0b5
