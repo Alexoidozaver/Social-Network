@@ -15,14 +15,12 @@ class UserRegistrationResource(SwaggerView):
 
     parameters = UserRegistrationSchema
     responses = {
-        200: {
-            'description': 'A single user',
-            'schema': UserRegistrationSchema
+        201: {
+            'AuthToken': 'A single user',
         }
     }
 
     def post(self):
-
         user, errors = UserRegistrationSchema().load(request.json)
         if errors:
             return errors, 400
@@ -33,7 +31,8 @@ class UserRegistrationResource(SwaggerView):
         db.session.add(user)
         db.session.commit()
 
-        return "User created",
+        access_token = create_access_token(identity=user.id)
+        return jsonify(access_token=access_token), 201
 
 
 class UserAuthenticationResource(SwaggerView):
@@ -46,6 +45,9 @@ class UserAuthenticationResource(SwaggerView):
     }
 
     def post(self):
+        """
+        User Auth
+        """
         _, errors = UserAuthenticationSchema().load(request.json)
         if errors:
             return errors, 400
@@ -60,4 +62,4 @@ class UserAuthenticationResource(SwaggerView):
             return "Wrong email or password", 400
         # Identity can be any data that is json serializable
         access_token = create_access_token(identity=user.id)
-        return jsonify(access_token=access_token), 200
+        return jsonify(access_token=access_token), 201

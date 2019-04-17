@@ -1,4 +1,5 @@
 from sourse.users.controllers import UserRegistrationResource, UserAuthenticationResource
+from sourse.posts.controllers import LikeResource, PostResource
 
 
 class Router:
@@ -14,3 +15,14 @@ class Router:
             view_func=UserAuthenticationResource.as_view('auth'),
             methods=['POST'],
         )
+        app.add_url_rule(
+            '/post',
+            view_func=PostResource.as_view('post'),
+            methods=['POST'],
+        )
+        app.add_url_rule(
+            '/like',
+            view_func=LikeResource.as_view('like'),
+            methods=['POST'],
+        )
+

@@ -12,6 +12,5 @@ class Post(BaseModel):
 
 class Like(BaseModel):
     __tablename__ = 'likes'
-    text = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'))
     post_id = Column(Integer, ForeignKey('posts.id'))

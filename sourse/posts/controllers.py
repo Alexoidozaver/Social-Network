@@ -8,6 +8,7 @@ from sqlalchemy import and_
 
 from sourse.database import db
 from sourse.posts.models import Post, Like
+from sourse.posts.schemes import LikeSchema, PostSchema
 
 
 class LikeResource(SwaggerView):
@@ -20,19 +21,44 @@ class LikeResource(SwaggerView):
         }
     }
 
+    @jwt_required
     def post(self):
+        data = request.json
+        data["user_id"] = get_jwt_identity()
 
         like, errors = LikeSchema().load(request.json)
         if errors:
-            return errors, 400
+            return jsonify(errors), 400
 
         db.session.add(like)
         db.session.commit()
 
-        return "Like created", 200
+        return jsonify(LikeSchema().dump(like)), 200
 
-    def delete(self, resource_id):
 
-        Like.query.filter(Like.id == resource_id).delete()
+class PostResource(SwaggerView):
 
-        return 200
+    parameters = PostSchema
+    responses = {
+        200: {
+            'description': 'A single user',
+            'schema': PostSchema
+        }
+    }
+
+    @jwt_required
+    def post(self):
+        print("-----------------------")
+        data = request.json
+        data["user_id"] = get_jwt_identity()
+
+        post, errors = PostSchema().load(data)
+        if errors:
+            return jsonify(errors), 400
+
+        db.session.add(post)
+        db.session.commit()
+        print(post)
+        print(post.__dict__)
+        print(jsonify(PostSchema().dump(post)).__dict__)
+        return jsonify(PostSchema().dump(post)), 200
